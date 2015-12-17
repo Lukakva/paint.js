@@ -25,10 +25,19 @@ function PaintJS(config) {
 		this.paintContainer = config.paint;
 	}
 
-	if (config.brushSize)     this.brushSize     = config.brushSize;
-	if (config.brushColor)    this.brushColor    = config.brushColor;
-	if (config.paletteColors) this.paletteColors = config.paletteColors;
-	if (config.brush)         this.brush         = config.brush;
+	var allowedKeys = [
+		"brushSize",
+		"brushColor",
+		"paletteColors",
+		"brushes",
+		"brush"
+	];
+
+	for (var key in config) {
+		if (allowedKeys.indexOf(key) > -1) {
+			this[key] = config[key];
+		}
+	}
 
 	this.init();
 }
@@ -714,6 +723,3 @@ function PaintJSBrush(config) {
 	this.documentMousemove = config.documentMousemove || function() {};
 	this.documentMouseup   = config.documentMouseup   || function() {};
 };
-
-
-
