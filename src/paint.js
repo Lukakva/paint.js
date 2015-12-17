@@ -282,9 +282,49 @@ PaintJS.prototype = {
 				paint.ctx.fillStyle = paint.brushColor;
 				paint.ctx.fillRect(0, 0, paint.canvas.width, paint.canvas.height);
 			}
+		});
+
+		var eraserBrush = new PaintJSBrush({
+			icon: "icons/eraser-brush.png",
+			brushIcon: "icons/eraser-brush.png",
+			erase: function(x, y) {
+				var ctx        = this.paintJS.ctx;
+				var radius     = this.paintJS.brushSize / 2;
+
+				ctx.beginPath();
+				ctx.lineJoin  = "round";
+				ctx.lineWidth = radius;
+
+				ctx.moveTo(this.previous.x, this.previous.y);
+				ctx.lineTo(x, y);
+				ctx.closePath();
+				ctx.strokeStyle = "#fff";
+				ctx.stroke();
+			},
+			documentMousedown: function(e) {
+				this.previous = {
+					x: e.x - 1,
+					y: e.y - 1
+				};
+
+				this.erase(e.x, e.y);
+				this.mousedown = true;
+			},
+			documentMousemove: function(e) {
+				if (this.mousedown) {
+					this.erase(e.x, e.y);
+					this.previous = {
+						x: e.x,
+						y: e.y
+					}
+				}
+			},
+			documentMouseup: function() {
+				this.mousedown = false;
+			}
 		})
 
-		return [defaultBrush, fillBrush];
+		return [defaultBrush, fillBrush, eraserBrush];
 	},
 	initBrushes: function() {
 		var brushes = this.brushes;
