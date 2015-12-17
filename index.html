@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Paint.js by Lukakva</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Paint.js</h1>
+      <h2 class="project-tagline">Painting in native HTML5</h2>
+      <a href="https://github.com/Lukakva/paint.js" class="btn">View on GitHub</a>
+      <a href="https://github.com/Lukakva/paint.js/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Lukakva/paint.js/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h1>
+
+<p><strong>Download</strong> the zip file and place it in your project's folder, or you can use <code>git clone</code> instead of manual download. After you complete one of those steps, just import the paint.js file. Don't forget that paint.js requires jQuery.js</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>paint.js/src/jquery.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;
+&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span> <span class="pl-e">src</span>=<span class="pl-s"><span class="pl-pds">"</span>paint.js/src/paint.js<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">script</span>&gt;</pre></div>
+
+<h1>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h1>
+
+<p>After you import the library, you can create a <code>&lt;div&gt;</code> element and use PaintJS object to initialize inside that div.</p>
+
+<div class="highlight highlight-text-html-basic"><pre>&lt;<span class="pl-ent">div</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>paint<span class="pl-pds">"</span></span>&gt;&lt;/<span class="pl-ent">div</span>&gt;
+...
+<span class="pl-s1">&lt;<span class="pl-ent">script</span> <span class="pl-e">type</span>=<span class="pl-s"><span class="pl-pds">"</span>text/javascript<span class="pl-pds">"</span></span>&gt;</span>
+<span class="pl-s1">    <span class="pl-k">var</span> paint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PaintJS</span>({</span>
+<span class="pl-s1">        paint<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>#paint<span class="pl-pds">"</span></span> <span class="pl-c">// or document.getElementById("paint")</span></span>
+<span class="pl-s1">    });</span>
+<span class="pl-s1">&lt;/<span class="pl-ent">script</span>&gt;</span></pre></div>
+
+<p>After user is done drawing, you can extract base64 contents using</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-c1">completeButton</span>.<span class="pl-en">onclick</span> <span class="pl-k">=</span> <span class="pl-k">function</span>() {
+    <span class="pl-k">var</span> base64 <span class="pl-k">=</span> <span class="pl-smi">paint</span>.<span class="pl-smi">canvas</span>.<span class="pl-en">toDataURL</span>();
+    <span class="pl-c">// $.ajax(...) using the base64 content</span>
+}</pre></div>
+
+<h1>
+<a id="customization" class="anchor" href="#customization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Customization</h1>
+
+<p>you can initialize PaintJS object with custom options</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> paint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PaintJS</span>({
+    paint<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>#paint<span class="pl-pds">"</span></span>, <span class="pl-c">// required key</span>
+    brushSize<span class="pl-k">:</span> <span class="pl-c1">35</span>, <span class="pl-c">// 8 is default</span>
+    brushColor<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>#ff0000<span class="pl-pds">"</span></span>, <span class="pl-c">//  hexadecimal value, default #000</span>
+    paletteColors<span class="pl-k">:</span> [ <span class="pl-c">// array of colors which user will be able to draw with</span>
+    <span class="pl-s"><span class="pl-pds">"</span>#ffffff<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>#000000<span class="pl-pds">"</span></span>,
+    <span class="pl-s"><span class="pl-pds">"</span>#808080<span class="pl-pds">"</span></span>
+    ]
+});</pre></div>
+
+<h1>
+<a id="drawing-on-images" class="anchor" href="#drawing-on-images" aria-hidden="true"><span class="octicon octicon-link"></span></a>Drawing on Images</h1>
+
+<p>you can initialize PaintJS to load from URL</p>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> paint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PaintJS</span>({
+    paint<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>#paint<span class="pl-pds">"</span></span>
+});
+<span class="pl-smi">paint</span>.<span class="pl-en">fromURL</span>(<span class="pl-s"><span class="pl-pds">"</span>test.jpg<span class="pl-pds">"</span></span>).<span class="pl-en">then</span>(<span class="pl-k">function</span>(<span class="pl-smi">paintJS</span>) {
+    <span class="pl-c">// act on paintJS</span>
+}).<span class="pl-en">catch</span>(<span class="pl-k">function</span>(<span class="pl-smi">err</span>) {
+    <span class="pl-c">// probably link is invalid</span>
+    <span class="pl-en">console</span>.<span class="pl-c1">log</span>(err);
+});</pre></div>
+
+<h1>
+<a id="creating-brushes" class="anchor" href="#creating-brushes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating brushes</h1>
+
+<div class="highlight highlight-source-js"><pre><span class="pl-k">var</span> brush <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PaintJSBrush</span>({
+    icon<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>icons/brush.png<span class="pl-pds">"</span></span>, <span class="pl-c">// icon to display in brushes section, required</span>
+    brushIcon<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>icons/circle.png<span class="pl-pds">"</span></span>, <span class="pl-c">// icon which will be displayed while mouse has entered the canvas</span>
+    <span class="pl-en">documentMousedown</span><span class="pl-k">:</span> <span class="pl-k">function</span>(<span class="pl-smi">e</span>) { <span class="pl-c">// optional. event is fired on canvas mousedown</span>
+        <span class="pl-k">var</span> x <span class="pl-k">=</span> <span class="pl-smi">e</span>.<span class="pl-c1">x</span>;
+        <span class="pl-k">var</span> y <span class="pl-k">=</span> <span class="pl-smi">e</span>.<span class="pl-c1">y</span>;
+        <span class="pl-k">var</span> paintJS <span class="pl-k">=</span> <span class="pl-v">this</span>.<span class="pl-smi">paintJS</span>; <span class="pl-c">// referrence to PaintJS object</span>
+        <span class="pl-k">var</span> canvas  <span class="pl-k">=</span> <span class="pl-smi">paintJS</span>.<span class="pl-smi">canvas</span>;
+        <span class="pl-k">var</span> ctx     <span class="pl-k">=</span> <span class="pl-smi">paintJS</span>.<span class="pl-smi">ctx</span>;
+        <span class="pl-k">var</span> size    <span class="pl-k">=</span> <span class="pl-smi">paintJS</span>.<span class="pl-smi">brushSize</span>;
+        <span class="pl-k">var</span> color   <span class="pl-k">=</span> <span class="pl-smi">paintJS</span>.<span class="pl-smi">brushColor</span>;
+        ...
+    }
+
+});
+
+<span class="pl-k">var</span> paint <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-en">PaintJS</span>({
+    paint<span class="pl-k">:</span> <span class="pl-s"><span class="pl-pds">"</span>#paint<span class="pl-pds">"</span></span>,
+    brush<span class="pl-k">:</span> brush <span class="pl-c">// this will add this brush to initial brushes, and set it as active</span>
+});</pre></div>
+
+<h1>
+<a id="todo" class="anchor" href="#todo" aria-hidden="true"><span class="octicon octicon-link"></span></a>Todo</h1>
+
+<ul>
+<li>Add support for transparency</li>
+<li>Add support for setting brushes and colors instead of only adding them</li>
+<li>Make selecting tool</li>
+<li>Create zoom button</li>
+<li>Undo and Redo</li>
+</ul>
+
+<h1>
+<a id="contributions-are-very-welcome" class="anchor" href="#contributions-are-very-welcome" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributions are VERY welcome!</h1>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Lukakva/paint.js">Paint.js</a> is maintained by <a href="https://github.com/Lukakva">Lukakva</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
