@@ -75,27 +75,27 @@ PaintJS.prototype = {
 
 		$(buttons).css({
 			"position": "absolute",
-			"height": "8px",
-			"width": "8px",
+			"height": "5px",
+			"width": "5px",
 			"background": "black",
-			"border": "1px solid lightgrey",
+			"border": "1px solid lightgray",
 			"left": "calc(50% - 10px)",
 			"top": "calc(50% - 10px)"
 		});
 
 		$(resizeRight).css({
-			"right": "-5px",
+			"right": "0",
 			"left": "auto",
 			"cursor": "ew-resize"
 		});
 		$(resizeBottom).css({
-			"bottom": "-5px",
+			"bottom": "0",
 			"top": "auto",
 			"cursor": "ns-resize"
 		});
 		$(resizeRightBottom).css({
-			"right": "-5px",
-			"bottom": "-5px",
+			"right": "0",
+			"bottom": "0",
 			"top": "auto",
 			"left": "auto",
 			"cursor": "nwse-resize"
@@ -393,7 +393,10 @@ PaintJS.prototype = {
 		$(canvasWrapper).css({
 			"position": "relative",
 			"display": "inline-block",
-			"cursor": "none"
+			"cursor": "none",
+			"border": "1px solid gray",
+			"overflow": "hidden",
+			"background": "white" // so that if user resizes it to bigger size than it was, the blank space will be white
 		});
 		var resizeButtons = this.createResizeButtons();
 		$(canvasWrapper).append(resizeButtons);
@@ -530,6 +533,8 @@ PaintJS.prototype = {
 			this.fakeCanvas.height = this.canvas.height;
 			var ctx = this.fakeCanvas.getContext("2d");
 			ctx.drawImage(this.canvas, 0, 0);
+
+			this.canvas.parentElement.style.border = "1px dotted black";
 		} else {
 			if (target == this.brushNode) {
 				var offset = $(this.brushNode.parentElement).offset();
@@ -556,19 +561,14 @@ PaintJS.prototype = {
 			var resizeH = (currY - prevY) * resizingOptions.resizer.y; // if y == 0, it wont resize canvas in height
 			var resizeW = (currX - prevX) * resizingOptions.resizer.x;
 
-			canvas = this.canvas;
+			var newWidth = this.resizingOptions.beforeResizing.width + resizeW;
+			var newHeight = this.resizingOptions.beforeResizing.height + resizeH;
 
-			var newWidth = resizingOptions.beforeResizing.width + resizeW;
-			var newHeight = resizingOptions.beforeResizing.height + resizeH;
+			if (newWidth < 100)  newWidth  = 100;
+			if (newHeight < 100) newHeight = 100;
 
-			if (newHeight <= 100) newHeight = 100;
-			if (newWidth <= 100) newWidth = 100;
-
-			canvas.width  = newWidth;
-			canvas.height = newHeight;
-
-			this.ctx.fillStyle = "#888";
-			this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+			var canvasWrapper = this.canvas.parentElement;
+			$(canvasWrapper).height(newHeight).width(newWidth);
 		} else {
 			if (e.target.parentElement == this.brushNode.parentElement && !e.target.isResizer) {
 				var isInCanvas =
@@ -607,11 +607,21 @@ PaintJS.prototype = {
 	documentMouseup: function(e) {
 		if (this.isBeingResized) {
 			this.isBeingResized = false;
+
+			var canvasWrapper = this.canvas.parentElement;
+			$(canvasWrapper).css("border", "1px solid gray");
+
+			var newWidth  = $(canvasWrapper).width();
+			var newHeight = $(canvasWrapper).height();
+
+			this.canvas.width  = newWidth;
+			this.canvas.height = newHeight;
+
 			this.clear();
-			if (this.canvas.width > this.fakeCanvas.width || this.canvas.height > this.fakeCanvas.height) {
+			if (newWidth > this.fakeCanvas.width || newHeight > this.fakeCanvas.height) {
 				// if the canvas was resized so that it increased in height or width, we have to fill it with white first
 				this.ctx.fillStyle = "#fff";
-				this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+				this.ctx.fillRect(0, 0, newWidth, newHeight);
 			}
 			this.ctx.drawImage(this.fakeCanvas, 0, 0);
 		}
