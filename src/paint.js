@@ -382,7 +382,7 @@ PaintJS.prototype = {
 		$(canvasContainer).css({
 			"background": "gray",
 			"width": "calc(100% - 40px)",
-			"height": "calc(90% - 40px)", // 10 px padding from navbar + 10px padding from this one
+			"height": "calc(100% - 114px)", // navbar height = 64px, navbar paddings = 10px, container paddings = 40px
 			"padding": "20px",
 			"min-height": "200px",
 			"float": "left",
@@ -430,7 +430,7 @@ PaintJS.prototype = {
 		var navbar = document.createElement("div");
 		$(navbar).css({
 			"float": "left",
-			"height": "calc(10% - 10px)",
+			"height": "64px",
 			"padding": "5px",
 			"width": "calc(100% - 10px)",
 			"background": "rgb(213, 218, 214)",
