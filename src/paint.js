@@ -578,8 +578,8 @@ PaintJS.prototype = {
 			var newWidth = this.resizingOptions.beforeResizing.width + resizeW;
 			var newHeight = this.resizingOptions.beforeResizing.height + resizeH;
 
-			if (newWidth < 100)  newWidth  = 100;
-			if (newHeight < 100) newHeight = 100;
+			if (newWidth < 10)  newWidth  = 10;
+			if (newHeight < 10) newHeight = 10;
 
 			var canvasWrapper = this.canvas.parentElement;
 			$(canvasWrapper).height(newHeight).width(newWidth);
