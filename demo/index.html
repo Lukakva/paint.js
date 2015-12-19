@@ -11,12 +11,13 @@
 		margin: 0;
 	}
 
-	#download-button {
+	#load-image {
 		margin-right: auto;
 	}
 </style>
 <body>
 	<button id="download-button">Download Image</button>
+	<button id="load-image">Load Image</button>
 	<div id="paint"></div>
 </body>
 <script type="text/javascript" src="src/jquery.js"></script>
@@ -27,6 +28,7 @@
 		paint: "#paint"
 	});
 
+	$(paint.navbar).prepend($("#load-image"));
 	$(paint.navbar).prepend($("#download-button"));
 
 	$("#download-button").click(function() {
@@ -45,6 +47,14 @@
 		} else {
 			window.open(dataURL);
 		}
+	});
+
+	$("#load-image").click(function() {
+		paint.fromURL("image.jpg").then(function(paint) {
+			window.paint = paint;
+		}).catch(function(err) {
+			console.log(err);
+		});
 	});
 </script>
 </html>
