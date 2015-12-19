@@ -386,12 +386,11 @@ PaintJS.prototype = {
 
 		var brushesContainer = this.brushesContainer;
 		$(brushesContainer).empty().css({
-			"margin": "0 10px",
-			"flex-wrap": "nowrap",
+			"margin": "3px 5px",
 			"overflow": "hidden",
-			"display": "flex",
-			"border": "1px solid rgba(0, 0, 0, 0.2)"
-		}).prependTo(this.navbar);
+			"border": "1px solid rgba(0, 0, 0, 0.2)",
+			"float": "right"
+		}).appendTo(this.navbar);
 
 		for (var i = 0; i < brushes.length; i++) {
 			var brushObject = this.brushes[i];
@@ -403,7 +402,8 @@ PaintJS.prototype = {
 
 			$(brushDiv).append(brushIcon).appendTo(brushesContainer).css({
 				"margin": "5px",
-				"padding": "5px"
+				"padding": "5px",
+				"float": "left"
 			})
 
 			brushDiv.paintJS = this;
@@ -491,19 +491,21 @@ PaintJS.prototype = {
 			"height": "64px",
 			"padding": "5px",
 			"width": "calc(100% - 10px)",
-			"background": "rgb(213, 218, 214)",
-			"display": "flex",
-			"justify-content": "flex-end",
-			"align-items": "center"
+			"background": "rgb(213, 218, 214)"
 		});
 		this.navbar = navbar;
 
 		var currentColor            = document.createElement("input");
 		currentColor.className      = "jscolor {hash: true}";
-		currentColor.style.fontSize = "0px";
-		currentColor.style.border   = "none";
-		currentColor.style.padding  = "0px";
 		currentColor.value          = this.brushColor;
+
+		$(currentColor).css({
+			"font-size": "0",
+			"padding": "0",
+			"border": "none",
+			"margin": "16px 5px",
+			"float": "right"
+		})
 
 		currentColor.onchange = function() {
 			this.paintJS.brushColor = this.value;
@@ -530,30 +532,28 @@ PaintJS.prototype = {
 			"width": paletteWidth + "px",
 			"height": "64px",
 			"overflow": "overlay",
-			"margin": "0 10px"
+			"margin": "0 5px",
+			"float": "right"
 		});
-
-		this.initBrushes();
 
 		var zoomContainer = document.createElement("div");
 		$(zoomContainer).css({
-			"display": "flex",
-			"align-items": "center",
-			"border": "1px solid rgba(0, 0, 0, 0.2)"
-		}).prependTo(navbar);
+			"border": "1px solid rgba(0, 0, 0, 0.2)",
+			"float": "right",
+			"margin": "5px"
+		});
 
 		var zoomIn = document.createElement("div");
 		var zoomOut = document.createElement("div");
 		var zoomButtons = [zoomIn, zoomOut];
 
 		$(zoomButtons).css({
-			"display": "flex",
-			"flex-wrap": "nowrap",
 			"height": "32px",
 			"width": "32px",
 			"margin": "5px",
 			"padding": "5px",
-			"border": "1px solid rgba(0, 0, 0, 0.2)"
+			"border": "1px solid rgba(0, 0, 0, 0.2)",
+			"float": "left"
 		}).appendTo(zoomContainer);
 		$(zoomButtons).append("<img height='32px' width='32px' />");
 
@@ -579,7 +579,9 @@ PaintJS.prototype = {
 
 		this.zoom = 100;
 
-		$(navbar).append(currentColor, palette);
+		$(navbar).append(palette, currentColor);
+		this.initBrushes();
+		$(navbar).append(zoomContainer);
 		$(canvasWrapper).append(canvas, brush);
 		$(canvasContainer).append(canvasWrapper);
 		$(paintContainer).append(navbar, canvasContainer);
