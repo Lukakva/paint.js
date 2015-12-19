@@ -1,10 +1,10 @@
 # Installation
-__Download__ the zip file and place it in your project's folder, or you can use `git clone` instead of manual download. After you complete one of those steps, just import the paint.js file. Don't forget that paint.js requires jQuery.js
+__Download__ the zip file and place it in your project's folder, or you can use `git clone` instead of manual download. After you complete one of those steps, just import the paint.js file. Don't forget that paint.js requires jQuery.js and JSColor.js
 ```html
+<script type="text/javascript" src="paint.js/src/jscolor.js"></script>
 <script type="text/javascript" src="paint.js/src/jquery.js"></script>
 <script type="text/javascript" src="paint.js/src/paint.js"></script>
 ```
-
 # Usage
 After you import the library, you can create a ``<div>`` element and use PaintJS object to initialize inside that div.
 
@@ -21,7 +21,7 @@ After user is done drawing, you can extract base64 contents using
 ```javascript
 completeButton.onclick = function() {
     var base64 = paint.canvas.toDataURL();
-    // $.ajax(...) using the base64 content
+    // $.ajax(...) upload using the base64 content
 }
 ```
 
