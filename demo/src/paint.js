@@ -735,6 +735,13 @@ PaintJS.prototype = {
 				this.ctx.fillRect(0, 0, newWidth, newHeight);
 			}
 			this.ctx.drawImage(this.fakeCanvas, 0, 0);
+
+			// reset the canvas wrapper height and width so it wraps around canvas instead of getting stuck at current size
+			var canvasWrapper = $(this.canvas.parentElement);
+			canvasWrapper.css({
+				"height": "auto",
+				"width": "auto"
+			});
 		}
 
 		this.brush.documentMouseup({
