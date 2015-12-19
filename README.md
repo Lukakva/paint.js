@@ -80,7 +80,6 @@ var paint = new PaintJS({
 * Add support for transparency
 * Add support for setting brushes and colors instead of only adding them
 * Make selecting tool
-* Create zoom button
 * Undo and Redo
 
 Contributions are VERY welcome!
