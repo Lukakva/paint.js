@@ -32,7 +32,7 @@ var paint = new PaintJS({
     paint: "#paint", // required key
     brushSize: 35, // 8 is default
     brushColor: "#ff0000", //  hexadecimal value, default #000
-    paletteColors: [ // array of colors which user will be able to draw with
+    paletteColors: [ // array of color shortcut, so that user does not have to use colorpicker for everything
     "#ffffff",
     "#000000",
     "#808080"
