@@ -420,7 +420,7 @@ PaintJS.prototype = {
 	},
 	initCanvas: function() {
 		if (this.canvas) {
-			console.error("This PaintJS object is already initialized.");
+			console.error("This PaintJS object's canvas is already initialized.");
 			return false;
 		}
 
@@ -783,19 +783,9 @@ Object.defineProperties(PaintJS.prototype, {
 			return this._paletteColors;
 		},
 		set: function(paletteColors) {
-			// at least 1 color has to be present
-			var atLeastOne = false;
-
-			for (var i = 0; i < paletteColors.length; i++) {
-				if (this.isHexColor(paletteColors[i])) {
-					atLeastOne = true;
-					break;
-				}
-			}
-
-			if (atLeastOne) {
-				this._paletteColors = paletteColors;
-			}
+			// removed check of at least one element in array
+			// since there can be no color shortcuts at all
+			this._paletteColors = paletteColors || [];
 		}
 	},
 	"brush": {
