@@ -326,6 +326,8 @@ PaintJS.prototype = {
 					b: parseInt(brushColor.slice(4, 6), 16),
 					a: 255
 				};
+
+				if (this.isSameColor(initialColor, brushColor)) return;
 				
 				var queue = [
 					[x, y]
