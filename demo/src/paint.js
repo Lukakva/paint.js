@@ -291,57 +291,69 @@ PaintJS.prototype = {
 		var fillBrush = new PaintJSBrush({
 			icon: "data:image/png;base64,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",
 			brushIcon: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAABEJAAARCQBQGfEVAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAA+FSURBVHic7Z17cFzVfcc/v7uSEGBh8whNW6ehARFI3CjSnrUcFwIOJtAk0JBM3U4fhCaFdBpCIDzSMqSTtMlQIMWkUAgFSpPMpEwyaTKF8AYDcanxnpVsxS0lrot50xqDZQLotffXP+5dscja1X3t3V3t/cxovNo9L+v73d+999zfPUdUlYzOxWn2ADKaS2aADiczQIez6AwgIjIwMHCgiCy6/1sjkFY/CRweHj50Zmam33GcflXtB94FHAwcoKoHisiBwIHAAf6/+wMCTAH/o6olEfkTa+1Es/4PrUzLGMAY062qq0TkBOBYVe0XkX5gWQLN/yeQz0ywL00zgIhIoVAYcF13rYicpKrH432DG8XPgJWZCd5KqgZYs2ZN1969e08Xkd8FPgQcllrnHvcAH89M8CapGGBgYODwnp6es1X1T4HlDe+wPpkJqmioAYwxwyJyrqquA3oa1lF4MhP4NMQAg4ODRziOc72I/FbijSdHZgISngcQETHGfD6Xy21rcfEBTgF+bIzpbfZAmkliEWB4ePjocrl8C3BcIg2mR0dHgkQiQD6f/+NyubyV9hMfOjwSxI4A+Xz+cyJyXULjmUsZeBrYLiLbVXW7iGwvl8u7crnc9apqEuyrIyNBLAPk8/mzROQf8aZek+Al4EFVvR/YODk5uWPbtm1T1QWMMX3A3cDqhPqspuNMENkA+Xx+nYh8D8jF6H8G2KCq9zmOc7+1dovWGVCDxa/QUSaIZIChoaGTHMe5C+iO2O8u4EbXdW8YGRl5PkgFX/x7gA9E7DMMHWOC0AYYHBxclsvlHgfeHqG/rcD68fHx27Zv3z4ZtFIM8XcBlwDXAEtD1u0IE4S+CsjlchcQXvzXgPNLpdKQtfbbKYp/krX2n/DO9MdD1u+Iq4NQEWD16tWHTE1NPQkcFLgDkQccxzn7scceezLs4IwxB+Ed86OK/7OqtobxjJRFgipCRYCpqamLCCG+qn6lWCyubbb4ANbax8giwT4EjgArVqxY0tvb+wKwJGDb37DWXhxlUEmLP6ftLBJUETgC7L///qcRUHwRuTWm+HGO+TXFhywSzCWwAVQ1qCB7VPWCKIOpEn9VyKqBxK+QmeBNwpwDHBOw3NXW2rB/2NTEr5CZwCOMAY4NUmh6evrGsINIW/wKmQkCGmDFihVLCJbKtWvr1q3/F2YAzRK/QqebIJABent7fylIORF5PEznvvj30iTxK8Q0wV3tbIJABiiXy+Ug5VzXDTyrVCX+cNA6PomKXyGGCU4Eni8UCpcODg4ekeSY0iDQPEB/f/9+S5cuDXL9u8Nae9RChVpN/GpizBOUgZyI/Dtw7ZIlS36wYcOGmcQHmDCBJ4KMMbtYOI9fXdddXu8OnzFmKd4fuOXErxDDBC5vRtWnVPWaycnJm7dt2/aLRAeYIGGuAp4OUEYcx/mdBcoUCH8bOTXxIdbhwMEzAcA7RWR9b2/vM8aYy40xv5zoIBMicATI5/PfEpHPBij6DHCMtfb1eoWMMe8HPgP8PnBInaKpil9NjEig7JslNQXcAvyltfalBIaXCGEMcKqI3BWw3SustX8epKAxJge8HzjB/zke7+lfaKL4FRI2AcAeEfkrVb3OWjsde4AxCXMO0A28SP1v6yyq+ulSqXRr2AEZYwR4H54ZHrTWbgvbRtI0wAQATwAXWmt/EmdscQmVD1AoFG5U1XMCFp8BLiuVSlepqrtg6RanQSZARO52XfeLpVIp1BxKUoQ1wLtVdRvQFaKPjblc7swoOQGtRgwTLMQMcH1vb+9lGzdufDXhtusSKiGkWCw+oarXhuzjuHK5PFYoFD4Tsl7LEePqYCG6gPMmJia2FAqFlQm3XZfQSaGrVq06aGZm5gkiJIWKyIOu664fGRm5s50PCw2MBADTwJdLpdKV9VLkkyJSWng+n/+YiPwr0R8IeQG4AbjZWvtCxDaaSoNNgKreLyJnNvrvE+fBkItF5MqY/Ssw5jjORcVi8YE0HJ8kjTYBsEtEzioWi3c2qP3Yj4ZdKyLnJjSW3cBPVfVhx3EettZuTeMwMTw8/Ovlctn4K5A93t3dXdy0adOzQeunYAKAb46Pj38pTDp9UGIZQEScfD7/LeDs5IY0yziwUVUfVtXHurq6fr558+YXk2q8UCicqapXAvPd6n4a+IK19sdB2krJBFvK5fIZo6OjO5NsNJYBYmTvRuVV4L+B7cDP/SeFt5fL5R1jY2MvBYkYAwMDh3d1dd0kIqcH6O97U1NT546Njb2yUMGUTPBsuVz+0Ojo6PakGoxsgCaIvxAu8AqwW0R2Ay+p6m68J453i8gvXNedEpELgaODNioitxeLxSBmScsELzqOs3bz5s3/kURjkQwQI42rLRGRM4vF4neDlE3JBC85jnPy5s2bt8RtKLQBOk18n1eA5Qvd4ayQkgn2AKf6k1ORCTUTGCOHr905GBgKWriBM4bVLAPuy+fzx8dpJLABjDFLiJjG5a8YdjnwvyHrtgwiUghTPiUT9InI3StXrlwbtYFABvBv0X6HiGlcxWLxbmvtpcA7gHXAg3iTQG2Dqg6ErZOSCQ5wXfd2Y8xHo1QOGgG+DJwRsu19kjmstdPW2h9Ya09yHOco4DwR+Re8M/WWRkSei1IvJRP0Aj9cuXJlqCgFAU4CjTG/DfyIcPP+oTJ5/AUm3+u67gkiciLwQeDwEP01HFX9RKlU+lHU+imdGD7nOI4JM2FW1wDGmAOBHcw/W1aLRNK4hoaG3pPL5T6gqseo6tH+3gFH0qQ1h7u6ut4RZop4PtIwgao+Ojk5uWbu6mq1WMgAlwF/HaL/hubwrVu3Lrdz5853lsvlo0Wk3zfGu/DS1Ss/gRewCMF3rLWfSqKhlCLBzdbaQNPzNQ1gjDkU79sfdKBNT+CE2dzFw4DDRORQ4DDXdQ8Rkf389y/G21YmKM+Vy+UVo6OjexIcY8NNEHTyqp4Bvg5cGrC/PcAHmy1+EPxchn8m2GIXL4vIJ4vF4kNJjyMFE7w8PT197EIP69a7CvhkiM7ObwfxAUql0h25XO59IvLIAkV/AqxohPiQytXBIT09PX+3UKF5I4Ax5ki8u25BuMNae1rIwTUd/1b26cBKERlU1aPwUrVHVPXRUql0dxrjSCGz6PRSqXR7rc9rGeA84JsB2n8FeG+7pnW1Cg02wbO9vb3vqZVtXOsQsCZg4/+QiR8f/3AQdqItKMsnJycvrPVhLQP8WsDGbfjxZMzFGHMAcFmj2lfV8wcHB+fdf7GWAX41YNsj0YaUUcEX/3a8bfQaxdJcLvfF+T7Y5xzAGNMFTLLwfYI91tqDFyiTUYeUxK+wd2pq6oi56W3zibykxvtzyY79MUhZfICDenp69okC+whtrd0DBFkOpr+dF0dqJk0Qv8I569ate8sGH7W+6UG+3V14j3FnhKCJ4gMcvmPHjrckj9QyQNB734HTpDKaLn6FP6j+pZYB/itgYx+ON5bOoUXER0Q+vnr16tmbYbUMEHQpmDOMMR+LP6zFTauI79M3OTk5O3VfywD34S1qFIQbjTHzTjJktJz4ADiO84nZ1/MVsNa+Cvw0YHu/grcpU8YcYojf0IRZVZ1N7q13vX9LiDY/ZYwJtCpYpxBT/KQ24qzFEUNDQ2+D+ga4DQhzj//yzAQeLS4+AI7jrIQ6BrDWKuFvUHS8CWKI/5qqXgV8QVW/DtxJA2dbKw+6BEkL3wj8Zsj2/8Ja+zcRx9a2xBD/FeBka21pnjaPFJHPquqngUMTGCYAqnpXqVT6SJA5/9/DWyAyDB0XCWKIv4ca4gNYa3cUi8VL+vr6lgNnEWzN5gURkWMg4NPBxphVwEPAfiH76YhIEFP8tbXEnw9/887vAh8J2ddcxq21y8IsFXsm8O0IHS1qE6QpfgX/SapLVfWrRN+9Xfv6+npCrQ9gjDkfWB+hs0VpggTCfqyMqnw+f4qI3EG4lVtncV338FDrA1hrrwGi7Am46M4Jmi0+QKlUugf4atT6uVzukKhLxFwAXB2hz0URCVpB/Ap+evtDeMvsh8J13dWht48HsNauB+bNMVuAto8ErSQ+gL8y2h/67Ycil8stiWQA6EwTtJr4Fay1T6tqkN1c3oLruhORDeB3vB6omXNeh7YzQauKX6FUKn0fGAtTJ5fLxTMAgLX2aha5CVpd/CpuC1M4dgSosJhN0Ebik8vlQhlAVd9IxACwOE3QTuID+LuyBF43sLu7O5kIUME3wUURqracCWKK/+G0xa+gqoGjQKIRoIK19m9pcxMkIH4x+VEFQ1W/z5ubV9ZlYmIi2QhQoZ1N0M7iA4yMjDyvqpuClB0bG0s+AlRoRxO0u/gVRCTI4h7Tquo2zAAwa4KLI1RN3QQxxB+nhcT3CZJJ9AaEXCw6Ctbab9DiJogp/sktJj6qGiSB53VIwQDQ2iZYbOL7BIkAz0NKBoBZE1wSoWrDTLBIxUdVgxjgKUjRAADW2qtoERMsVvEBuru7FzwEqOpOSNkA0BomWGQnfPvQ3d29YAQQkfQjQIVmmiAB8TfH6T8N/CXhXqtXRkR2QpMMALMm+FKEqpcbY67zVzIPhTHmaLzNKhat+FXUPQw0NQJUsNZeSTQTfA4YM8acGKSwMcbx09i2EH7Xk3YUH7ydWGsyMTHxFMTcODIpjDGXAFdEqKrATXgbWoxYa2cXRva3uTkSbxWTzwPHRWi/XcWnUCjcpaqn1vh4r7V2KURMJ04aa+2VvmBhE0YFOMf/wRjzLDCKt2fAIPH2Dmhb8QFUtd5up1srL5p6CKjGWnsFEPcsfzlwGnACHSy+T00DiMiDldctYwBIzARxWQziA7xc6wPXdR+ovG4pA0DTTTAOnLIIxAdvB5f5eH1ycnI2a6jlDACzJvgzYDrFbp8B1sTdirVVcF330RofbazeUKolDQBgrb0BWAvU3fIkIR4BjLV2NIW+UmF0dHSE+c8D7q3+pWUNAGCtfQQwQKOmXhX4e7yndNMwWmqoqisiG+a8vaurq+um6jda2gAA1tpn8Dar/iPgyQSbvhfvW3+utTbNQ01qqOoP57z1lU2bNu2tfqMlJoKC4m8Jdw7exM67IzQxgxfuv2atnfvtWJQYY27FW1lkS19fX2HDhg0z1Z+3lQGq8Te2+qj/8xt4W83OXSzhDbzkiH/D2wXsHn819I6hv79/v2XLlp2iqvdba1+f+3nbGmAuxhgHeBvwdrwNL16w1jZyw+ZFwaIxQEY0Wv4kMKOxZAbocDIDdDiZATqczAAdTmaADiczQIeTGaDDyQzQ4WQG6HAyA3Q4mQE6nMwAHc7/A7g0cVyViB3uAAAAAElFTkSuQmCC",
-			getColor: function(x, y) {
-				var ctx = this.paintJS.ctx;
-				var imageData = ctx.getImageData(x, y, 1, 1).data;
-
-				var r = imageData[0].toString(16);
-				var g = imageData[1].toString(16);
-				var b = imageData[2].toString(16);
-
-				if (r.length == 1) r = "0" + r;
-				if (g.length == 1) g = "0" + g;
-				if (b.length == 1) b = "0" + b;
-
-				return "#" + r + g + b;
+			// returns object containing RGBA values
+			// from array of image data and index of first pixel
+			getRGBA: function(array, index) {
+				return {
+					r: array[index],
+					g: array[index + 1],
+					b: array[index + 2],
+					a: array[index + 3]
+				};
 			},
-			// fills pixel with brush color
-			setPixel: function(x, y) {
-				var ctx = this.paintJS.ctx;
-				var pixel = ctx.createImageData(1, 1);
-				var color = paint.brushColor;
-				color = color.slice(1);
-
-				// create pixel from hex string
-				pixel.data[0] = parseInt(color.slice(0,2), 16);
-				pixel.data[1] = parseInt(color.slice(2,4), 16);
-				pixel.data[2] = parseInt(color.slice(4,6), 16);
-				pixel.data[3] = 255; // alpha value
-
-				// insert new pixel into old one's location
-				ctx.putImageData(pixel, x, y);
-			},
-			// color argument
-			setSurroundingPixels: function(x, y, color) {
-				if (this.getColor(x, y) == color) this.setPixel(x, y);
-				else return;
-
-				var zis = this;
-				setTimeout(function() {
-					zis.setSurroundingPixels(x - 1, y,     color);
-					zis.setSurroundingPixels(x + 1, y,     color);
-					zis.setSurroundingPixels(x,     y - 1, color);
-					zis.setSurroundingPixels(x,     y + 1, color);
-				}, 0);
+			isSameColor: function(color1, color2) {
+				return color1.r === color2.r &&color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
 			},
 			documentMousedown: function(e) {
-				// fill pixels only with this color
-				var color = this.getColor(e.x, e.y);
-
 				var canvasWidth = this.paintJS.canvas.width;
 				var canvasHeight = this.paintJS.canvas.height;
+
+				// get canvas pixels
+				var imageData = this.paintJS.ctx.getImageData(0, 0, canvasWidth, canvasHeight);
+				var pixels = imageData.data;
+
+				var x = Math.floor(e.x);
+				var y = Math.floor(e.y);
+
+				var indexOfCurrentPixel = 4 * (y * canvasWidth + x);
+				// color which has to be filled continuesly
+				var initialColor = this.getRGBA(pixels, indexOfCurrentPixel);
+
+				var brushColor = this.paintJS.brushColor.slice(1);
+				brushColor = {
+					r: parseInt(brushColor.slice(0, 2), 16),
+					g: parseInt(brushColor.slice(2, 4), 16),
+					b: parseInt(brushColor.slice(4, 6), 16),
+					a: 255
+				};
 				
-				this.setSurroundingPixels(e.x, e.y, color);
+				var queue = [
+					[x, y]
+				];
+
+				while (queue.length) {
+					var cords = queue.pop();
+					var x = cords[0];
+					var y = cords[1];
+
+					var indexOfCurrentPixel = 4 * (y * canvasWidth + x);
+					var currentColor = this.getRGBA(pixels, indexOfCurrentPixel);
+					if (this.isSameColor(currentColor, initialColor)) {
+						// fill this pixel with initial color
+						pixels[indexOfCurrentPixel]     = brushColor.r;
+						pixels[indexOfCurrentPixel + 1] = brushColor.g;
+						pixels[indexOfCurrentPixel + 2] = brushColor.b;
+						pixels[indexOfCurrentPixel + 3] = brushColor.a;
+
+						if (x <= canvasWidth)  queue.push([x + 1, y]);
+						if (x > 0)             queue.push([x - 1, y]);
+						if (y <= canvasHeight) queue.push([x    , y + 1]);
+						if (y > 0)             queue.push([x    , y - 1]);
+					}
+					indexOfCurrentPixel = null;
+				}
+
+				this.paintJS.ctx.putImageData(imageData, 0, 0);
 			}
 		});
 
