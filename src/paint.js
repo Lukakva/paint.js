@@ -947,3 +947,54 @@ function PaintJSBrush(config) {
 	this.documentMousemove = config.documentMousemove || function() {};
 	this.documentMouseup   = config.documentMouseup   || function() {};
 };
+
+function CanvasHistory(canvas) {
+	if (!canvas || canvas.nodeName != "CANVAS")  return {};
+	this.canvas = canvas;
+	this.ctx    = canvas.getContext("2d");
+	this.addStage();
+}
+
+CanvasHistory.prototype = {
+	historyArray: [],
+	maxStages: 100, // maximum amount of stages
+	currentStage: 0,
+	// pushes current state of canvas to historyArray
+	addStage: function() {
+		var stage = {
+			width: this.canvas.width,
+			height: this.canvas.height,
+			imageData: this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
+		};
+		
+		if (this.currentStage != this.historyArray.length - 1) {
+			this.historyArray.splice(this.currentStage + 1); // delete history after this stage
+		}
+		
+		this.historyArray.push(stage);
+		
+		if (this.historyArray.length > this.maxStages) {
+			this.historyArray.shift(); // remove last item (which is first in array)
+		}
+		
+		this.currentStage = this.historyArray.length - 1;
+	},
+	// restores canvas from previous stage (using stage index as an argument)
+	restoreFromStage: function(stageIndex) {
+		var stage = this.historyArray[stageIndex];
+		if (stage) {
+			this.currentStage  = stageIndex;
+			this.canvas.width  = stage.width;
+			this.canvas.height = stage.height;
+			this.ctx.putImageData(stage.imageData, 0, 0);
+		}
+	},
+	// kind of an undo command
+	restoreFromPreviousStage: function() {
+		this.restoreFromStage(this.currentStage - 1);
+	},
+	// kind of a redo command
+	restoreFromNextStage: function() {
+		this.restoreFromStage(this.currentStage + 1);
+	}
+}
