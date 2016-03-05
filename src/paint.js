@@ -360,10 +360,10 @@ PaintJS.prototype = {
 						pixels[indexOfCurrentPixel + 2] = brushColor.b;
 						pixels[indexOfCurrentPixel + 3] = brushColor.a;
 
-						if (cords[0] <= canvasWidth)  queue.push([cords[0] + 1, cords[1]]);
-						if (cords[0] > 0)             queue.push([cords[0] - 1, cords[1]]);
-						if (cords[1] <= canvasHeight) queue.push([cords[0]    , cords[1] + 1]);
-						if (cords[1] > 0)             queue.push([cords[0]    , cords[1] - 1]);
+						if (cords[0] < canvasWidth)  queue.push([cords[0] + 1, cords[1]]);
+						if (cords[0] > 0)            queue.push([cords[0] - 1, cords[1]]);
+						if (cords[1] < canvasHeight) queue.push([cords[0]    , cords[1] + 1]);
+						if (cords[1] > 0)            queue.push([cords[0]    , cords[1] - 1]);
 					}
 					
 					cords = null;
@@ -544,11 +544,13 @@ PaintJS.prototype = {
 		brush.paintJSBrush = this.brush;
 		brush.paintJS      = this; // just in case
 
-		var canvas           = document.createElement("canvas");
-		canvas.paintJS       = this;
-		canvas.width         = $(paintContainer).width() / 2;
-		canvas.height        = $(paintContainer).height() / 2;
-		canvas.style.display = "block";
+		var canvas     = document.createElement("canvas");
+		canvas.paintJS = this;
+		canvas.width   = $(paintContainer).width() / 2;
+		canvas.height  = $(paintContainer).height() / 2;
+		
+		canvas.style.display        = "block";
+		canvas.style.imageRendering = "pixelated"; // when zoom is applied to canvas, browser tries to make it "smooth". this value will make sure that it's still pixelated
 
 		this.canvas          = canvas;
 		this.ctx             = canvas.getContext("2d");
@@ -846,6 +848,8 @@ Object.defineProperties(PaintJS.prototype, {
 		set: function(brushSize) {
 			brushSize = parseInt(brushSize) || 8; // to prevent brushSize from being 0 or any other thing
 			this._brushSize = brushSize;
+			
+			brushSize = brushSize * this.zoom / 100; // increase the brush size as well
 
 			$(this.brushNode).css({
 				"height": brushSize + "px",
@@ -892,6 +896,8 @@ Object.defineProperties(PaintJS.prototype, {
 				this.canvas.style.width = newWidth + "px";
 				this.canvas.style.height = newHeight + "px";
 			}
+			
+			this.brushSize = this.brushSize; // re calculate brush size because zoom changed
 		}
 	}
 });
