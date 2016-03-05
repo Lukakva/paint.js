@@ -246,17 +246,17 @@ PaintJS.prototype = {
 				ctx.closePath();
 				ctx.stroke();
 			},
-			documentMousedown: function(e) {
+			mousedown: function(e) {
 				this.previous = {
 					x: e.x - 0.5,
 					y: e.y - 0.5
 				};
 
 				this.draw(e.x + 0.5, e.y);
-				this.mousedown = true;
+				this.mouseIsDown = true;
 			},
-			documentMousemove: function(e) {
-				if (this.mousedown) {
+			mousemove: function(e) {
+				if (this.mouseIsDown) {
 					this.draw(e.x, e.y);
 
 					this.previous = {
@@ -265,13 +265,13 @@ PaintJS.prototype = {
 					};
 				}
 			},
-			documentMouseup: function(e) {
-				if (this.mousedown) {
+			mouseup: function(e) {
+				if (this.mouseIsDown) {
 					// if mousedown is true, the mouseup meant that user had drawn something
 					this.paintJS.canvasHistory.addStage();
 				}
 				
-				this.mousedown = false;
+				this.mouseIsDown = false;
 			}
 		});
 
@@ -291,7 +291,7 @@ PaintJS.prototype = {
 			isSameColor: function(color1, color2) {
 				return color1.r === color2.r &&color1.g === color2.g && color1.b === color2.b && color1.a === color2.a;
 			},
-			documentMousedown: function(e) {
+			mousedown: function(e) {
 				var canvasWidth = this.paintJS.canvas.width;
 				var canvasHeight = this.paintJS.canvas.height;
 
@@ -394,17 +394,17 @@ PaintJS.prototype = {
 				ctx.strokeStyle = "#fff";
 				ctx.stroke();
 			},
-			documentMousedown: function(e) {
+			mousedown: function(e) {
 				this.previous = {
 					x: e.x - 1,
 					y: e.y - 1
 				};
 
 				this.erase(e.x, e.y);
-				this.mousedown = true;
+				this.mouseIsDown = true;
 			},
-			documentMousemove: function(e) {
-				if (this.mousedown) {
+			mousemove: function(e) {
+				if (this.mouseIsDown) {
 					this.erase(e.x, e.y);
 					this.previous = {
 						x: e.x,
@@ -412,12 +412,12 @@ PaintJS.prototype = {
 					}
 				}
 			},
-			documentMouseup: function() {
-				if (this.mousedown) {
+			mouseup: function() {
+				if (this.mouseIsDown) {
 					this.paintJS.canvasHistory.addStage();
 				}
 				
-				this.mousedown = false;
+				this.mouseIsDown = false;
 			}
 		});
 
@@ -443,17 +443,17 @@ PaintJS.prototype = {
 
 				return "#" + r + g + b;
 			},
-			documentMousedown: function(e) {
+			mousedown: function(e) {
 				this.paintJS.setColor(this.getColor(e.x, e.y));
-				this.mousedown = true; 
+				this.mouseIsDown = true; 
 			},
-			documentMousemove: function(e) {
-				if (this.mousedown) {
+			mousemove: function(e) {
+				if (this.mouseIsDown) {
 					this.paintJS.setColor(this.getColor(e.x, e.y));
 				}
 			},
-			documentMouseup: function() {
-				this.mousedown = false;
+			mouseup: function() {
+				this.mouseIsDown = false;
 			}
 		})
 
@@ -682,7 +682,9 @@ PaintJS.prototype = {
 		
 		brushSizeChanger.find("input").css({
 			"float": "left",
-			"display": "block"
+			"display": "block",
+			"height": "22px",
+			"box-sizing": "border-box"
 		}).prop("paintJS", this);
 		
 		brushSizeChanger.find(".brush-size-changer-dragger").prop("max", 800).on("input", function() {
@@ -736,27 +738,47 @@ PaintJS.prototype = {
 		var object = this;
 
 		$(document).mousedown(function(e) {
-			object.documentMousedown(e);
+			if (e.button == 0) {
+				object.mousedown(e);
+			} else {
+				object.rightMousedown(e);
+			}
 		});
 
 		$(document).mousemove(function(e) {
-			object.documentMousemove(e);
+			object.mousemove(e);
 		});
 
 		$(document).mouseup(function(e) {
-			object.documentMouseup(e);
+			if (e.button == 0) {
+				object.mouseup(e);
+			} else {
+				object.rightMouseup(e);
+			}
 		});
-
-		$(document).on("contextmenu", function(e) {
-			e.preventDefault();
+		
+		$(document).contextmenu(function(e) {
+			object.contextMenu(e);
 		});
+		
+		$(document).keydown(function(e) {
+			object.keydown(e);	
+		});
+		
+		$(document).keyup(function(e) {
+			object.keyup(e);	
+		});
+		
+		$(document).keypress(function(e) {
+			object.keypress(e);
+		})
 	},
 	isHexColor: function(hex) {
 		return hex.indexOf("#") === 0 // starts with #
 		&& (hex.length === 4 || hex.length === 7) // is #fff or #ffffff
 		&& !isNaN(parseInt(hex.slice(1), 16)); // the content without # has to be valid hexadecimal number
 	},
-	documentMousedown: function(e) {
+	mousedown: function(e) {
 		var target = e.target;
 		if (target.isResizer) {
 			this.isBeingResized = true;
@@ -782,14 +804,14 @@ PaintJS.prototype = {
 				var y = e.pageY - offset.top;
 				var x = e.pageX - offset.left;
 
-				this.brushNode.paintJS.brush.documentMousedown({
+				this.brushNode.paintJS.brush.mousedown({
 					x: x / this.zoom * 100,
 					y: y / this.zoom * 100
 				});
 			}
 		}
 	},
-	documentMousemove: function(e) {
+	mousemove: function(e) {
 		if (this.isBeingResized) {
 			var resizingOptions = this.resizingOptions;
 
@@ -826,7 +848,7 @@ PaintJS.prototype = {
 				if (left < 0) left = 0;
 				if (top < 0) top = 0;
 
-				this.brush.documentMousemove({
+				this.brush.mousemove({
 					x: left / this.zoom * 100,
 					y: top / this.zoom * 100
 				});
@@ -839,7 +861,7 @@ PaintJS.prototype = {
 			}
 		}
 	},
-	documentMouseup: function(e) {
+	mouseup: function(e) {
 		if (this.isBeingResized) {
 			this.isBeingResized = false;
 
@@ -868,10 +890,117 @@ PaintJS.prototype = {
 			});
 		}
 
-		this.brush.documentMouseup({
+		this.brush.mouseup({
 			x: (e.pageX - $(this.brushNode.parentElement).offset().left) / this.zoom * 100,
 			y: (e.pageY - $(this.brushNode.parentElement).offset().top) / this.zoom * 100
 		});
+	},
+	rightMousedown: function(e) {
+		e.preventDefault();
+	},
+	rightMouseup: function(e) {
+		e.preventDefault();
+	},
+	contextMenu: function(e) {
+		e.preventDefault();
+	},
+	keydowns: {},
+	keycodes: {
+		 "13" : "ENTER",
+		 "8"  : "BACKSPACE",
+		 "219": "SQUARE_BRACKET_LEFT",
+		 "221": "SQUARE_BRACKET_RIGHT",
+		 "16" : "SHIFT",
+		 "17" : "CTRL",
+		 "18" : "ALT",
+		 "91" : "CMD",
+	},
+	shortcuts: {
+		// all of shortcut functions are colled in PaintJS object scope
+		// so using this keyword will refer to PaintJS object
+		"SQUARE_BRACKET_LEFT": function() {
+			var decrementValue = 1;
+			if (this.brushSize > 10) decrementValue = 5;
+			if (this.brushSize > 50) decrementValue = 10;
+			if (this.brushSize > 100) decrementValue = 25;
+			if (this.brushSize > 200) decrementValue = 50;
+			if (this.brushSize > 300) decrementValue = 100;
+			
+			this.brushSize -= decrementValue;
+			
+			// so that brush's center stays at same position
+			var position = $(this.brushNode).position();
+			$(this.brushNode).css({
+				top: Math.floor(position.top) + decrementValue / 2,
+				left: Math.floor(position.left) + decrementValue / 2
+			});
+		},
+		"SQUARE_BRACKET_RIGHT": function() {
+			var incrementValue = 1;
+			if (this.brushSize > 10) incrementValue = 5;
+			if (this.brushSize > 50) incrementValue = 10;
+			if (this.brushSize > 100) incrementValue = 25;
+			if (this.brushSize > 200) incrementValue = 50;
+			if (this.brushSize > 300) incrementValue = 100;
+			
+			this.brushSize += incrementValue;
+			
+			// so that brush's center stays in the same position
+			var position = $(this.brushNode).position();
+			$(this.brushNode).css({
+				top: Math.floor(position.top) - incrementValue / 2,
+				left: Math.floor(position.left) - incrementValue / 2
+			});
+		},
+		// undo
+		"CMD+Z": function() {
+			this.canvasHistory.restoreFromPreviousStage();	
+		},
+		"CTRL+Z": function() {
+			this.canvasHistory.restoreFromPreviousStage();
+		},
+		// redo
+		"CMD+Y": function() {
+			this.canvasHistory.restoreFromNextStage();
+		},
+		"CTRL+Y": function() {
+			this.canvasHistory.restoreFromNextStage();
+		},
+	},
+	keydown: function(e) {
+		var keyCode = e.keyCode || e.which;
+		this.keydowns[keyCode] = true;
+		
+		var keydownNames = [];
+		for (var keydownCode in this.keydowns) {
+			if (this.keydowns[keydownCode] === false) continue;
+			// if current keycode is stored inside keycodes object, use it to create shortcut string
+			// otherwise try to create a string from char code
+			var keyCodeValue = this.keycodes[keydownCode] || String.fromCharCode(parseInt(keydownCode));
+			keydownNames.push(keyCodeValue);
+		}
+		
+		// shortcut string created by current keydowns key names
+		var currentShortcut = keydownNames.sort().join("+");
+		
+		for (var shortcut in this.shortcuts) {
+			// sort shortcut key so that it matches the string above
+			// if shortcut is CMD+SHIFT+R
+			// and the shortcut is registered as CMD+R+SHIFT
+			// they will still match because string will be re-sorted
+			shortcut = shortcut.split("+").sort().join("+");
+			if (shortcut == currentShortcut) {
+				e.preventDefault();
+				this.shortcuts[shortcut].bind(this)();
+			}
+		}
+	},
+	keyup: function(e) {
+		e.preventDefault();
+		this.keydowns = {};
+	},
+	keypress: function(e) {
+		delete this.keydown[e.keyCode || e.which];
 	}
 }
 
@@ -893,7 +1022,7 @@ Object.defineProperties(PaintJS.prototype, {
 			return this._brushSize;
 		},
 		set: function(brushSize) {
-			brushSize = parseInt(brushSize) || 8; // to prevent brushSize from being 0 or any other thing
+			brushSize = parseInt(brushSize) || 1; // to prevent brushSize from being 0 or any other thing
 			this._brushSize = brushSize;
 			
 			brushSize = brushSize * this.zoom / 100; // increase the brush size as well
@@ -958,9 +1087,9 @@ function PaintJSBrush(config) {
 		this[conf] = config[conf];
 	}
 
-	this.documentMousedown = config.documentMousedown || function() {};
-	this.documentMousemove = config.documentMousemove || function() {};
-	this.documentMouseup   = config.documentMouseup   || function() {};
+	this.mousedown = config.mousedown || function() {};
+	this.mousemove = config.mousemove || function() {};
+	this.mouseup   = config.mouseup   || function() {};
 };
 
 function CanvasHistory(canvas) {
