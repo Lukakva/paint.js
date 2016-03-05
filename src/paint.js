@@ -31,7 +31,8 @@ function PaintJS(config) {
 		"brushColor",
 		"paletteColors",
 		"brushes",
-		"brush"
+		"brush",
+		"maxStages"
 	];
 
 	for (var key in config) {
@@ -70,6 +71,7 @@ PaintJS.prototype = {
 		"#ffffff"
 	],
 	zoom: 100,
+	maxStages: 100,
 	// this canvas is used for resizing issues,
 	// when resizing canvas it gets cleared so we have to keep track of canvas before it is being resized
 	// and redraw it after it is done
@@ -264,6 +266,11 @@ PaintJS.prototype = {
 				}
 			},
 			documentMouseup: function(e) {
+				if (this.mousedown) {
+					// if mousedown is true, the mouseup meant that user had drawn something
+					this.paintJS.canvasHistory.addStage();
+				}
+				
 				this.mousedown = false;
 			}
 		});
@@ -366,6 +373,7 @@ PaintJS.prototype = {
 				this.paintJS.ctx.putImageData(imageData, 0, 0);
 				var timeTaken = (new Date().getTime() - start).toString();
 				console.log("Fill brush took %s milliseconds", timeTaken);
+				this.paintJS.canvasHistory.addStage();
 			}
 		});
 
@@ -405,6 +413,10 @@ PaintJS.prototype = {
 				}
 			},
 			documentMouseup: function() {
+				if (this.mousedown) {
+					this.paintJS.canvasHistory.addStage();
+				}
+				
 				this.mousedown = false;
 			}
 		});
@@ -550,6 +562,9 @@ PaintJS.prototype = {
 		this.ctx             = canvas.getContext("2d");
 		this.ctx.fillStyle   = "#fff";
 		this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+		
+		this.canvasHistory   = new CanvasHistory(canvas);
+		this.canvasHistory.maxStages = this.maxStages;
 
 		this.initialSize = {
 			height: this.canvas.height,
@@ -734,7 +749,7 @@ PaintJS.prototype = {
 
 		$(document).on("contextmenu", function(e) {
 			e.preventDefault();
-		})
+		});
 	},
 	isHexColor: function(hex) {
 		return hex.indexOf("#") === 0 // starts with #
