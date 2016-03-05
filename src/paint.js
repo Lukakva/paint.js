@@ -247,11 +247,11 @@ PaintJS.prototype = {
 			},
 			documentMousedown: function(e) {
 				this.previous = {
-					x: e.x - 1,
-					y: e.y - 1
+					x: e.x - 0.5,
+					y: e.y - 0.5
 				};
 
-				this.draw(e.x, e.y);
+				this.draw(e.x + 0.5, e.y + 0.5);
 				this.mousedown = true;
 			},
 			documentMousemove: function(e) {
