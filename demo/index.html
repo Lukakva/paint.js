@@ -62,7 +62,8 @@
 	});
 
 	$("#load-image").click(function() {
-		paint.fromURL("image.jpg").then(function(paint) {
+		var url = window.prompt("Enter image URL or leave the input blank to load default image") || "image.jpg";
+		paint.fromURL(url).then(function(paint) {
 			window.paint = paint;
 		}).catch(function(err) {
 			console.log(err);
