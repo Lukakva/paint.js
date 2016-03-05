@@ -967,6 +967,14 @@ PaintJS.prototype = {
 			this.canvasHistory.restoreFromNextStage();
 		},
 	},
+	registerShortcut: function(shortcut, callback) {
+		if (typeof shortcut != "string" || typeof callback != "function") return;
+		
+		this.shortcuts[shortcut] = callback;
+	},
+	deleteShortcut: function(shortcut) {
+		return !!this.shortcuts[shortcut] && delete this.shortcuts[shortcut];
+	},
 	keydown: function(e) {
 		var keyCode = e.keyCode || e.which;
 		this.keydowns[keyCode] = true;
