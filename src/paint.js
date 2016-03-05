@@ -195,25 +195,6 @@ PaintJS.prototype = {
 
 		return button;
 	},
-	isDarkColor: function(colorString) {
-		var whatIsConsideredDark = 128;
-
-		if (this.isHexColor(colorString)) {
-			var value = colorString.slice(1);
-			var colorValues = value.match(new RegExp(".{" + (value.length / 3) + "}", "g"));
-			return parseInt(colorValues[0], 16) <= whatIsConsideredDark
-			&& parseInt(colorValues[1], 16)     <= whatIsConsideredDark
-			& parseInt(colorValues[2], 16)      <= whatIsConsideredDark;
-
-		} else if (colorString.indexOf("rgb") > -1) {
-			var rgb = colorString.replace("rgb(", "").replace(")", "").replace(/ /g, "");
-			var colorValues = rgb.split(",");
-			return (parseInt(colorValues[0]) <= whatIsConsideredDark)
-			& (parseInt(colorValues[1])      <= whatIsConsideredDark)
-			&& (parseInt(colorValues[2])     <= whatIsConsideredDark);
-
-		}
-	},
 	setColorFromButton: function(button) {
 		this.setColor(button.colorValue);
 	},
@@ -332,30 +313,65 @@ PaintJS.prototype = {
 				var queue = [
 					[x, y]
 				];
+				var filledPixels = 0;
 
+				var start = new Date().getTime();
+				// while (queue.length) {
+				// 	filledPixels++;
+				// 	var cords = queue.pop();
+				// 	var x = cords[0];
+				// 	var y = cords[1];
+
+				// 	var indexOfCurrentPixel = 4 * (y * canvasWidth + x);
+				// 	var currentColor = this.getRGBA(pixels, indexOfCurrentPixel);
+				// 	if (this.isSameColor(currentColor, initialColor)) {
+				// 		// fill this pixel with initial color
+				// 		pixels[indexOfCurrentPixel]     = brushColor.r;
+				// 		pixels[indexOfCurrentPixel + 1] = brushColor.g;
+				// 		pixels[indexOfCurrentPixel + 2] = brushColor.b;
+				// 		pixels[indexOfCurrentPixel + 3] = brushColor.a;
+
+				// 		if (x <= canvasWidth)  queue.push([x + 1, y]);
+				// 		if (x > 0)             queue.push([x - 1, y]);
+				// 		if (y <= canvasHeight) queue.push([x    , y + 1]);
+				// 		if (y > 0)             queue.push([x    , y - 1]);
+				// 	}
+				// 	indexOfCurrentPixel = null;
+				// }
+				
+				// the code above is actual code, but after testing i discovered that it is better not to create any other objects
+				// like while using function getRGBA or using function like isSameColor creates extra references so
+				// the code below is just kinda uglyfied and minified version of above
+				// UPDATE: after testing, the code below works 2 times faster
+				
 				while (queue.length) {
 					var cords = queue.pop();
-					var x = cords[0];
-					var y = cords[1];
+					filledPixels++;
 
-					var indexOfCurrentPixel = 4 * (y * canvasWidth + x);
-					var currentColor = this.getRGBA(pixels, indexOfCurrentPixel);
-					if (this.isSameColor(currentColor, initialColor)) {
+					var indexOfCurrentPixel = 4 * (cords[1] * canvasWidth + cords[0]);
+					
+					if (initialColor.r == pixels[indexOfCurrentPixel] &&
+						initialColor.g == pixels[indexOfCurrentPixel + 1] &&
+						initialColor.b == pixels[indexOfCurrentPixel + 2] &&
+						initialColor.a == pixels[indexOfCurrentPixel + 3]) {
 						// fill this pixel with initial color
 						pixels[indexOfCurrentPixel]     = brushColor.r;
 						pixels[indexOfCurrentPixel + 1] = brushColor.g;
 						pixels[indexOfCurrentPixel + 2] = brushColor.b;
 						pixels[indexOfCurrentPixel + 3] = brushColor.a;
 
-						if (x <= canvasWidth)  queue.push([x + 1, y]);
-						if (x > 0)             queue.push([x - 1, y]);
-						if (y <= canvasHeight) queue.push([x    , y + 1]);
-						if (y > 0)             queue.push([x    , y - 1]);
+						if (cords[0] <= canvasWidth)  queue.push([cords[0] + 1, cords[1]]);
+						if (cords[0] > 0)             queue.push([cords[0] - 1, cords[1]]);
+						if (cords[1] <= canvasHeight) queue.push([cords[0]    , cords[1] + 1]);
+						if (cords[1] > 0)             queue.push([cords[0]    , cords[1] - 1]);
 					}
-					indexOfCurrentPixel = null;
+					
+					cords = null;
 				}
-
+				
 				this.paintJS.ctx.putImageData(imageData, 0, 0);
+				var timeTaken = (new Date().getTime() - start).toString();
+				console.log("Fill brush required %s milliseconds to calculate and fill %s pixels", timeTaken, filledPixels);
 			}
 		});
 
