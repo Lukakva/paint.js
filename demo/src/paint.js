@@ -232,12 +232,11 @@ PaintJS.prototype = {
 			},
 			draw: function(x, y) {
 				var ctx        = this.paintJS.ctx;
-				var radius     = this.paintJS.brushSize / 2;
 				var brushColor = this.paintJS.brushColor;
 
 				ctx.beginPath();
 				ctx.lineJoin    = "round";
-				ctx.lineWidth   = radius;
+				ctx.lineWidth   = this.paintJS.brushSize;
 				ctx.strokeStyle = brushColor;
 
 				ctx.moveTo(this.previous.x, this.previous.y);
@@ -247,11 +246,11 @@ PaintJS.prototype = {
 			},
 			documentMousedown: function(e) {
 				this.previous = {
-					x: e.x - 1,
-					y: e.y - 1
+					x: e.x - 0.5,
+					y: e.y - 0.5
 				};
 
-				this.draw(e.x, e.y);
+				this.draw(e.x + 0.5, e.y);
 				this.mousedown = true;
 			},
 			documentMousemove: function(e) {
@@ -313,11 +312,9 @@ PaintJS.prototype = {
 				var queue = [
 					[x, y]
 				];
-				var filledPixels = 0;
 
 				var start = new Date().getTime();
 				// while (queue.length) {
-				// 	filledPixels++;
 				// 	var cords = queue.pop();
 				// 	var x = cords[0];
 				// 	var y = cords[1];
@@ -346,24 +343,21 @@ PaintJS.prototype = {
 				
 				while (queue.length) {
 					var cords = queue.pop();
-					filledPixels++;
 
 					var indexOfCurrentPixel = 4 * (cords[1] * canvasWidth + cords[0]);
 					
 					if (initialColor.r == pixels[indexOfCurrentPixel] &&
 						initialColor.g == pixels[indexOfCurrentPixel + 1] &&
-						initialColor.b == pixels[indexOfCurrentPixel + 2] &&
-						initialColor.a == pixels[indexOfCurrentPixel + 3]) {
+						initialColor.b == pixels[indexOfCurrentPixel + 2]) {
 						// fill this pixel with initial color
 						pixels[indexOfCurrentPixel]     = brushColor.r;
 						pixels[indexOfCurrentPixel + 1] = brushColor.g;
 						pixels[indexOfCurrentPixel + 2] = brushColor.b;
-						pixels[indexOfCurrentPixel + 3] = brushColor.a;
 
-						if (cords[0] <= canvasWidth)  queue.push([cords[0] + 1, cords[1]]);
-						if (cords[0] > 0)             queue.push([cords[0] - 1, cords[1]]);
-						if (cords[1] <= canvasHeight) queue.push([cords[0]    , cords[1] + 1]);
-						if (cords[1] > 0)             queue.push([cords[0]    , cords[1] - 1]);
+						if (cords[0] < canvasWidth)  queue.push([cords[0] + 1, cords[1]]);
+						if (cords[0] > 0)            queue.push([cords[0] - 1, cords[1]]);
+						if (cords[1] < canvasHeight) queue.push([cords[0]    , cords[1] + 1]);
+						if (cords[1] > 0)            queue.push([cords[0]    , cords[1] - 1]);
 					}
 					
 					cords = null;
@@ -371,7 +365,7 @@ PaintJS.prototype = {
 				
 				this.paintJS.ctx.putImageData(imageData, 0, 0);
 				var timeTaken = (new Date().getTime() - start).toString();
-				console.log("Fill brush required %s milliseconds to calculate and fill %s pixels", timeTaken, filledPixels);
+				console.log("Fill brush took %s milliseconds", timeTaken);
 			}
 		});
 
@@ -461,7 +455,7 @@ PaintJS.prototype = {
 
 		var brushesContainer = this.brushesContainer;
 		$(brushesContainer).empty().css({
-			"margin": "3px 5px",
+			"margin": "4px 5px",
 			"overflow": "hidden",
 			"border": "1px solid rgba(0, 0, 0, 0.2)",
 			"float": "right"
@@ -544,11 +538,13 @@ PaintJS.prototype = {
 		brush.paintJSBrush = this.brush;
 		brush.paintJS      = this; // just in case
 
-		var canvas           = document.createElement("canvas");
-		canvas.paintJS       = this;
-		canvas.width         = $(paintContainer).width() / 2;
-		canvas.height        = $(paintContainer).height() / 2;
-		canvas.style.display = "block";
+		var canvas     = document.createElement("canvas");
+		canvas.paintJS = this;
+		canvas.width   = $(paintContainer).width() / 2;
+		canvas.height  = $(paintContainer).height() / 2;
+		
+		canvas.style.display        = "block";
+		canvas.style.imageRendering = "pixelated"; // when zoom is applied to canvas, browser tries to make it "smooth". this value will make sure that it's still pixelated
 
 		this.canvas          = canvas;
 		this.ctx             = canvas.getContext("2d");
@@ -653,10 +649,48 @@ PaintJS.prototype = {
 		});
 
 		this.zoom = 100;
+		
+		var brushSizeChanger = $(
+		'<div class="brush-size-changer">' +
+			'<input type="range" class="brush-size-changer-dragger" />' +
+			'<input type="number" class="brush-size-changer-value" />' +
+		'</div>'
+		);
+		
+		brushSizeChanger.css({
+			"float": "left",
+			"margin-top": "16.5px",
+			"border": "1px solid rgba(0, 0, 0, 0.2)",
+			"padding": "5px",
+			"background": "rgba(255, 255, 255, 0.5)"
+		});
+		
+		brushSizeChanger.find("input").css({
+			"float": "left",
+			"display": "block"
+		}).prop("paintJS", this);
+		
+		brushSizeChanger.find(".brush-size-changer-dragger").prop("max", 800).on("input", function() {
+			$(this).parent().find(".brush-size-changer-value").val(this.value);
+			this.paintJS.brushSize = this.value;
+		}).css({
+			"width": "100px",
+			"margin": "0 5px"
+		})
+		
+		brushSizeChanger.find(".brush-size-changer-value").css({
+			"width": "50px"
+		}).on("input", function() {
+			$(this).parent().find(".brush-size-changer-dragger").val(this.value);
+			this.paintJS.brushSize = this.value;
+		});
+		
+		brushSizeChanger.find(".brush-size-changer-value").val(this.brushSize);
+		brushSizeChanger.find(".brush-size-changer-dragger").val(this.brushSize);
 
 		$(navbar).append(palette, currentColor);
 		this.initBrushes();
-		$(navbar).append(zoomContainer);
+		$(navbar).append(zoomContainer, brushSizeChanger);
 		$(canvasWrapper).append(canvas, brush);
 		$(canvasContainer).append(canvasWrapper);
 		$(paintContainer).append(navbar, canvasContainer);
@@ -846,6 +880,8 @@ Object.defineProperties(PaintJS.prototype, {
 		set: function(brushSize) {
 			brushSize = parseInt(brushSize) || 8; // to prevent brushSize from being 0 or any other thing
 			this._brushSize = brushSize;
+			
+			brushSize = brushSize * this.zoom / 100; // increase the brush size as well
 
 			$(this.brushNode).css({
 				"height": brushSize + "px",
@@ -892,6 +928,8 @@ Object.defineProperties(PaintJS.prototype, {
 				this.canvas.style.width = newWidth + "px";
 				this.canvas.style.height = newHeight + "px";
 			}
+			
+			this.brushSize = this.brushSize; // re calculate brush size because zoom changed
 		}
 	}
 });
