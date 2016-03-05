@@ -76,6 +76,18 @@ var paint = new PaintJS({
     brush: brush // this will add this brush to initial brushes, and set it as active
 });
 ```
+
+# Creating Shortcuts
+```javascript
+paintJS.registerShortcut("CMD+SHIFT+A", function() {
+    // do stuff
+});
+
+// deleting shortcut
+paintJS.deleteShortcut("CMD+SHIFT+A");
+```
+It does not matter whether you write ``CMD+SHIFT+A`` or ``A+CMD+SHIFT``, it will still work.
+
 # Todo
 * Add support for transparency
 * Add support for setting brushes and colors instead of only adding them
